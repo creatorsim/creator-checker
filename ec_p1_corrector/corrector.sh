@@ -44,7 +44,7 @@ for E in $LIST; do
 		#Comparar con solucion correcta
 		cat $GROUP/$E/ejercicio1.s | grep -v ".text" > /tmp/$$.txt
 		cat ./test/ej1/$T /tmp/$$.txt > $GROUP/$E/test/test_ejercicio1_$T
-		./creator/creator.sh -a ./creator/architecture/MIPS-32-like.json -s $GROUP/$E/test/test_ejercicio1_$T -l test/ej1/apoyo.o -o min -r solution/output/output_ejercicio1_$T.txt &> /dev/null
+		./creator/creator.sh -a ./creator/architecture/MIPS-32-like.json -s $GROUP/$E/test/test_ejercicio1_$T -l test/ej1/apoyo.o -o min -r solution/output/output_ejercicio1_$T.txt
 
 		if [ $? -eq 0 ]
 		then
@@ -66,7 +66,7 @@ for E in $LIST; do
 		#Comparar con solucion correcta
 		cat $GROUP/$E/ejercicio2.s | grep -v ".text" > /tmp/$$.txt
 		cat ./test/ej2/$T /tmp/$$.txt > $GROUP/$E/test/test_ejercicio2_$T
-		./creator/creator.sh -a ./creator/architecture/MIPS-32-like.json -s $GROUP/$E/test/test_ejercicio2_$T -o min -r solution/output/output_ejercicio2_$T.txt &> /dev/null
+		./creator/creator.sh -a ./creator/architecture/MIPS-32-like.json -s $GROUP/$E/test/test_ejercicio2_$T -o min -r solution/output/output_ejercicio2_$T.txt
 
 		if [ $? -eq 0 ]
 		then
