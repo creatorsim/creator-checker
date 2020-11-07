@@ -44,11 +44,11 @@ for E in $LIST; do
 		#Comparar con solucion correcta
 		cat $GROUP/$E/ejercicio1.s | \
 		grep -v ".text" | \
-		sed 's/init:/Init:/gi' | \
-		sed 's/add:/Add:/gi' | \
-		sed 's/compare:/Compare:/gi' | \
-		sed 's/extract:/Extract:/gi' | \
-		sed 's/extractvalues:/extractValues:/gi' > /tmp/$$.txt
+		sed 's/\sinit:/Init:/gi' | \
+		sed 's/\sadd:/Add:/gi' | \
+		sed 's/\scompare:/Compare:/gi' | \
+		sed 's/\sextract:/Extract:/gi' | \
+		sed 's/\sextractvalues:/extractValues:/gi' > /tmp/$$.txt
 
 		cat ./test/ej1/$T /tmp/$$.txt > $GROUP/$E/test/test_ejercicio1_$T
 		./creator/creator.sh -a ./creator/architecture/MIPS-32-like.json -s $GROUP/$E/test/test_ejercicio1_$T -l test/ej1/apoyo.o -o min -r solution/output/output_ejercicio1_$T.txt
@@ -82,7 +82,7 @@ for E in $LIST; do
 			echo -n "0;" >> Notas_$GROUP.csv
 
 			mkdir -p $GROUP/$E/test_problems
-			./creator/creator.sh -a ./creator/architecture/MIPS-32-like.json -s $GROUP/$E/test/test_ejercicio2_$T -l test/ej2/apoyo.o &> $GROUP/$E/test_problems/problem_ejercicio2_$T.txt
+			./creator/creator.sh -a ./creator/architecture/MIPS-32-like.json -s $GROUP/$E/test/test_ejercicio2_$T -l test/ej1/apoyo.o &> $GROUP/$E/test_problems/problem_ejercicio2_$T.txt
 
 			#./creator/creator.sh -a ./creator/architecture/MIPS-32-like.json -s $GROUP/$E/test/test_ejercicio1_$T -l test/ej1/apoyo.o | aha > $GROUP/$E/test_problems/problem_ejercicio1_$T.html
 			#wkhtmltopdf $GROUP/$E/test_problems/problem_ejercicio1_$T.html $GROUP/$E/test_problems/problem_ejercicio1_$T.pdf &> /dev/null
