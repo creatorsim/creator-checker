@@ -43,12 +43,21 @@ for E in $LIST; do
 
 		#Comparar con solucion correcta
 		cat $GROUP/$E/ejercicio1.s | \
+<<<<<<< HEAD:ec_p1_corrector/checker_esp.sh
 		sed 's/\.text/ /gi' | \
 		sed 's/\.data/ /gi' | \
 		sed 's/\.main/ /gi' | \
 		sed 's/init/Init/gi' | \
 		sed 's/compare/Compare/gi' | \
 		sed 's/extract/Extract/gi' > /tmp/$$.txt
+=======
+		grep -v ".text" | \
+		sed 's/\sinit:/Init:/gi' | \
+		sed 's/\sadd:/Add:/gi' | \
+		sed 's/\scompare:/Compare:/gi' | \
+		sed 's/\sextract:/Extract:/gi' | \
+		sed 's/\sextractvalues:/extractValues:/gi' > /tmp/$$.txt
+>>>>>>> ba464997b575c63803e897d61373a5dfd896a53d:ec_p1_corrector/checker.sh
 
 		cat ./test/ej1/$T /tmp/$$.txt > $GROUP/$E/test/test_ejercicio1_$T
 
@@ -94,7 +103,11 @@ for E in $LIST; do
 			echo -n "0;" >> Notas_$GROUP.csv
 
 			mkdir -p $GROUP/$E/test_problems
+<<<<<<< HEAD:ec_p1_corrector/checker_esp.sh
 			./creator/creator.sh -a ./creator/architecture/MIPS-32-like.json -s $GROUP/$E/test/test_ejercicio2_$T -l test/ej1/apoyo.o --maxins 50000 &> $GROUP/$E/test_problems/problem_ejercicio2_$T.txt
+=======
+			./creator/creator.sh -a ./creator/architecture/MIPS-32-like.json -s $GROUP/$E/test/test_ejercicio2_$T -l test/ej1/apoyo.o &> $GROUP/$E/test_problems/problem_ejercicio2_$T.txt
+>>>>>>> ba464997b575c63803e897d61373a5dfd896a53d:ec_p1_corrector/checker.sh
 
 			#./creator/creator.sh -a ./creator/architecture/MIPS-32-like.json -s $GROUP/$E/test/test_ejercicio1_$T -l test/ej1/apoyo.o | aha > $GROUP/$E/test_problems/problem_ejercicio1_$T.html
 			#wkhtmltopdf $GROUP/$E/test_problems/problem_ejercicio1_$T.html $GROUP/$E/test_problems/problem_ejercicio1_$T.pdf &> /dev/null
