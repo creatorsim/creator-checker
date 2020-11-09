@@ -42,10 +42,18 @@ for E in $LIST; do
 		echo -n $T" "
 
 		#Comparar con solucion correcta
-		cat $GROUP/$E/ejercicio1.s | grep -v ".text" > /tmp/$$.txt
-		cat ./test/ej1/$T /tmp/$$.txt > $GROUP/$E/test/test_ejercicio1_$T
-		./creator/creator.sh -a ./creator/architecture/MIPS-32-like.json -s $GROUP/$E/test/test_ejercicio1_$T -l test/ej1/apoyo.o -o min -r solution/output/output_ejercicio1_$T.txt
+		cat $GROUP/$E/ejercicio1.s | \
+		sed 's/\.text/ /gi' | \
+		sed 's/\.data/ /gi' | \
+		sed 's/\.main/ /gi' | \
+		sed 's/init/Init/gi' | \
+		sed 's/compare/Compare/gi' | \
+		sed 's/extract/Extract/gi' > /tmp/$$.txt
 
+		cat ./test/ej1/$T /tmp/$$.txt > $GROUP/$E/test/test_ejercicio1_$T
+
+		./creator/creator.sh -a ./creator/architecture/MIPS-32-like.json -s $GROUP/$E/test/test_ejercicio1_$T -l test/ej1/apoyo.o -o min -r solution/output/output_ejercicio1_$T.txt --maxins 50000 > /tmp/$$.txt
+		
 		if [ $? -eq 0 ]
 		then
 		   echo -n "1;" >> Notas_$GROUP.csv
@@ -53,20 +61,31 @@ for E in $LIST; do
 			echo -n "0;" >> Notas_$GROUP.csv
 
 			mkdir -p $GROUP/$E/test_problems
-			./creator/creator.sh -a ./creator/architecture/MIPS-32-like.json -s $GROUP/$E/test/test_ejercicio1_$T -l test/ej1/apoyo.o &> $GROUP/$E/test_problems/problem_ejercicio1_$T.txt
+			./creator/creator.sh -a ./creator/architecture/MIPS-32-like.json -s $GROUP/$E/test/test_ejercicio1_$T -l test/ej1/apoyo.o --maxins 50000 &> $GROUP/$E/test_problems/problem_ejercicio1_$T.txt
 
 			#./creator/creator.sh -a ./creator/architecture/MIPS-32-like.json -s $GROUP/$E/test/test_ejercicio1_$T -l test/ej1/apoyo.o | aha > $GROUP/$E/test_problems/problem_ejercicio1_$T.html
 			#wkhtmltopdf $GROUP/$E/test_problems/problem_ejercicio1_$T.html $GROUP/$E/test_problems/problem_ejercicio1_$T.pdf &> /dev/null
 		fi
+
+		cat /tmp/$$.txt >> $GROUP/$E/logs.txt
+		cat /tmp/$$.txt
+		rm /tmp/$$.txt
 	done
 
 	for T in $TEST_2; do
 		echo -n $T" "
 
 		#Comparar con solucion correcta
-		cat $GROUP/$E/ejercicio2.s | grep -v ".text" > /tmp/$$.txt
+		cat $GROUP/$E/ejercicio2.s | \
+		sed 's/\.text/ /gi' | \
+		sed 's/\.data/ /gi' | \
+		sed 's/\.main/ /gi' | \
+		sed 's/extractvalue/extractValues/gi' | \
+		sed 's/extractvalues/extractValues/gi' | \
+		sed 's/extractvaluess/extractValues/gi' > /tmp/$$.txt
 		cat ./test/ej2/$T /tmp/$$.txt > $GROUP/$E/test/test_ejercicio2_$T
-		./creator/creator.sh -a ./creator/architecture/MIPS-32-like.json -s $GROUP/$E/test/test_ejercicio2_$T -o min -r solution/output/output_ejercicio2_$T.txt
+
+		./creator/creator.sh -a ./creator/architecture/MIPS-32-like.json -s $GROUP/$E/test/test_ejercicio2_$T -o min -r solution/output/output_ejercicio2_$T.txt --maxins 50000 > /tmp/$$.txt
 
 		if [ $? -eq 0 ]
 		then
@@ -75,11 +94,15 @@ for E in $LIST; do
 			echo -n "0;" >> Notas_$GROUP.csv
 
 			mkdir -p $GROUP/$E/test_problems
-			./creator/creator.sh -a ./creator/architecture/MIPS-32-like.json -s $GROUP/$E/test/test_ejercicio2_$T -l test/ej2/apoyo.o &> $GROUP/$E/test_problems/problem_ejercicio2_$T.html
+			./creator/creator.sh -a ./creator/architecture/MIPS-32-like.json -s $GROUP/$E/test/test_ejercicio2_$T -l test/ej1/apoyo.o --maxins 50000 &> $GROUP/$E/test_problems/problem_ejercicio2_$T.txt
 
 			#./creator/creator.sh -a ./creator/architecture/MIPS-32-like.json -s $GROUP/$E/test/test_ejercicio1_$T -l test/ej1/apoyo.o | aha > $GROUP/$E/test_problems/problem_ejercicio1_$T.html
 			#wkhtmltopdf $GROUP/$E/test_problems/problem_ejercicio1_$T.html $GROUP/$E/test_problems/problem_ejercicio1_$T.pdf &> /dev/null
 		fi
+
+		cat /tmp/$$.txt >> $GROUP/$E/logs.txt
+		cat /tmp/$$.txt
+		rm /tmp/$$.txt
 	done
 	echo ""
 	echo ""

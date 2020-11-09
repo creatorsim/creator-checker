@@ -42,12 +42,10 @@ for T in $TEST_1; do
 	sed 's/sfpr\[f11[^;]*;\s//g' | \
 	sed 's/ir\[ra[^;]*;\s//g' | \
 	sed 's/keyboard[^;]*;\s//g' | \
-	sed 's/display[^;]*;\s//g' > solution/output/output_ejercicio1_$T.txt 
-
-	#DUDA
-	#sed 's/ir\[at[^;]*;\s//g' | \
-	#sed 's/ir\[fp[^;]*;\s//g' | \
-	#sed 's/ir\[a[0-3][^;]*;\s//g' > solution/output/output_ejercicio1_$T.txt 
+	sed 's/display[^;]*;\s//g' | \
+	sed 's/ir\[at[^;]*;\s//g' | \
+	sed 's/ir\[fp[^;]*;\s//g' | \
+	sed 's/ir\[a[0-3][^;]*;\s//g' > solution/output/output_ejercicio1_$T.txt 
 
 	rm solution/output/aux_output_ejercicio1_$T.txt
 done
@@ -86,12 +84,10 @@ for T in $TEST_2; do
 	sed 's/sfpr\[f11[^;]*;\s//g' | \
 	sed 's/ir\[ra[^;]*;\s//g' | \
 	sed 's/keyboard[^;]*;\s//g' | \
-	sed 's/display[^;]*;\s//g' > solution/output/output_ejercicio2_$T.txt 
-
-	#DUDA
-	#sed 's/ir\[at[^;]*;\s//g' | \
-	#sed 's/ir\[fp[^;]*;\s//g' | \
-	#sed 's/ir\[a[0-3][^;]*;\s//g' > solution/output/output_ejercicio2_$T.txt 
+	sed 's/display[^;]*;\s//g' | \
+	sed 's/ir\[at[^;]*;\s//g' | \
+	sed 's/ir\[fp[^;]*;\s//g' | \
+	sed 's/ir\[a[0-3][^;]*;\s//g' > solution/output/output_ejercicio2_$T.txt 
 
 	rm solution/output/aux_output_ejercicio2_$T.txt
 done
