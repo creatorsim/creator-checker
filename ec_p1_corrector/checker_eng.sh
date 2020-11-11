@@ -52,7 +52,7 @@ for E in $LIST; do
 
 		cat ./test/ej1/$T /tmp/$$.txt > $GROUP/$E/test/test_exercise1_$T
 
-		./creator/creator.sh -a ./creator/architecture/MIPS-32-like.json -s $GROUP/$E/test/test_exercise1_$T -l test/ej1/apoyo.o -o min -r solution/output/output_exercise1_$T.txt --maxins 50000 > /tmp/$$.txt
+		./creator/creator.sh -a ./creator/architecture/MIPS-32-like.json -s $GROUP/$E/test/test_exercise1_$T -l test/ej1/apoyo.o -o min -r solution/output/output_ejercicio1_$T.txt --maxins 50000 > /tmp/$$.txt
 		
 		if [ $? -eq 0 ]
 		then
@@ -85,7 +85,7 @@ for E in $LIST; do
 		sed 's/extractvaluess/extractValues/gi' > /tmp/$$.txt
 		cat ./test/ej2/$T /tmp/$$.txt > $GROUP/$E/test/test_exercise2_$T
 
-		./creator/creator.sh -a ./creator/architecture/MIPS-32-like.json -s $GROUP/$E/test/test_exercise2_$T -o min -r solution/output/output_exercise2_$T.txt --maxins 50000 > /tmp/$$.txt
+		./creator/creator.sh -a ./creator/architecture/MIPS-32-like.json -s $GROUP/$E/test/test_exercise2_$T -o min -r solution/output/output_ejercicio2_$T.txt --maxins 50000 > /tmp/$$.txt
 
 		if [ $? -eq 0 ]
 		then
