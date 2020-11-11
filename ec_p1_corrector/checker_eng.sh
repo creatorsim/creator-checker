@@ -36,6 +36,10 @@ for E in $LIST; do
 	echo $E
 	echo -n $E";" >> Notas_$GROUP.csv
 
+	rm -fr $GROUP/$E/test
+	rm -fr $GROUP/$E/test_problems
+	rm -fr $GROUP/$E/logs.txt
+
 	mkdir -p $GROUP/$E/test
 
 	for T in $TEST_1; do
