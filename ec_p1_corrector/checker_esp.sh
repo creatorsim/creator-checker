@@ -49,10 +49,7 @@ for E in $LIST; do
 		cat $GROUP/$E/ejercicio1.s | \
 		sed 's/\.text/ /gi' | \
 		sed 's/\.data/ /gi' | \
-		sed 's/\.main/ /gi' | \
-		sed 's/init/Init/gi' | \
-		sed 's/compare/Compare/gi' | \
-		sed 's/extract/Extract/gi' > /tmp/$$.txt
+		sed 's/\.main/ /gi' > /tmp/$$.txt
 
 		cat ./test/ej1/$T /tmp/$$.txt > $GROUP/$E/test/test_ejercicio1_$T
 
@@ -83,10 +80,7 @@ for E in $LIST; do
 		cat $GROUP/$E/ejercicio2.s | \
 		sed 's/\.text/ /gi' | \
 		sed 's/\.data/ /gi' | \
-		sed 's/\.main/ /gi' | \
-		sed 's/extractvalue/extractValues/gi' | \
-		sed 's/extractvalues/extractValues/gi' | \
-		sed 's/extractvaluess/extractValues/gi' > /tmp/$$.txt
+		sed 's/\.main/ /gi' > /tmp/$$.txt
 		cat ./test/ej2/$T /tmp/$$.txt > $GROUP/$E/test/test_ejercicio2_$T
 
 		./creator/creator.sh -a ./creator/architecture/MIPS-32-like.json -s $GROUP/$E/test/test_ejercicio2_$T -o min -r solution/output/output_ejercicio2_$T.txt --maxins 50000 > /tmp/$$.txt
