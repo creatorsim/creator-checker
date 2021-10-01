@@ -19,4 +19,4 @@
 3. Include the solutions, tests and deliveries in the corresponding directories
 4. Execute for each group unzip_all.sh <group>
 5. Execute ./mk_solution.sh to generate the final state
-6. Execute for each group ./checker.sh <group> This script generates a csv file with the results of the correction
+6. Execute for each group ./checker_esp.sh <group> or ./checker_eng.sh <group> This script generates a csv file with the results of the correction
