@@ -6,12 +6,15 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 WORKDIR /
 
 RUN apt update && apt-get install -y \
+	sudo \
+	curl \
 	git \
-	nodejs \
 	npm \
 	vim \
 	zip \
 	unzip
+
+RUN curl -fsSL https://deb.nodesource.com/setup_16.x | sudo -E bash - && apt install -y nodejs
 
 RUN git clone https://github.com/creatorsim/creator.git && \
 	cd creator && \
