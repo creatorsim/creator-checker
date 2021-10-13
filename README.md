@@ -14,9 +14,27 @@
   * unzip_all.sh: unzips all deliveries from a small group, receives a parameter which is the group number ./unzip_all <group>
   
 ## Steps to correct all deliveries of a group
-1. Clone this repository git clone https://github.com/creatorsim/checker.git
-2. Execute ./container_start.sh
+1. Clone this repository:
+```console
+git clone https://github.com/creatorsim/checker.git
+```
+2. Execute:
+```console
+./container_start.sh
+```
 3. Include the solutions, tests and deliveries in the corresponding directories
-4. Execute for each group unzip_all.sh <group>
-5. Execute ./mk_solution.sh to generate the final state
-6. Execute for each group ./checker_esp.sh <group> or ./checker_eng.sh <group> This script generates a csv file with the results of the correction
+4. Execute for each group:
+```console
+unzip_all.sh <group>
+```
+5. Generate the final state:
+```console
+./mk_solution.sh
+```
+6. Execute for each group ./checker_esp.sh \<group\> or ./checker_eng.sh \<group\> This script generates a csv file with the results of the correction
+```console
+./checker_esp.sh <group>
+```
+```console
+./checker_eng.sh <group>
+```
