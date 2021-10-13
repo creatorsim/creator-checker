@@ -25,7 +25,7 @@ git clone https://github.com/creatorsim/checker.git
 3. Include the solutions, tests and deliveries in the corresponding directories
 4. Execute for each group:
 ```console
-unzip_all.sh <group>
+./unzip_all.sh <group>
 ```
 5. Generate the final state:
 ```console
