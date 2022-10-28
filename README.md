@@ -29,12 +29,12 @@ git clone https://github.com/creatorsim/checker.git
 ```
 5. Generate the final state:
 ```console
-./mk_solution.sh
+./mk_solution_riscv.sh
 ```
 6. Execute for each group ./checker_esp.sh \<group\> or ./checker_eng.sh \<group\> This script generates a csv file with the results of the correction
 ```console
-./checker_esp.sh <group>
+./checker_esp_riscv.sh <group>
 ```
 ```console
-./checker_eng.sh <group>
+./checker_eng_riscv.sh <group>
 ```
