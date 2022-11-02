@@ -85,7 +85,7 @@ for T in $TEST_2; do
 	sed 's/sfpr\[f11[^;]*;\s//g' | \
 	sed 's/ir\[ra[^;]*;\s//g' | \
 	sed 's/keyboard[^;]*;\s//g' | \
-	#sed 's/display[^;]*;\s//g' | \
+	sed 's/display[^;]*;\s//g' | \
 	sed 's/ir\[at[^;]*;\s//g' | \
 	sed 's/ir\[fp[^;]*;\s//g' | \
 	sed 's/ir\[a[0-7][^;]*;\s//g' > solution/output/output_ejercicio2_$T.txt 

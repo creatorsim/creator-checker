@@ -54,7 +54,7 @@ for E in $LIST; do
 		cat $GROUP/$E/exercise1.s | \
 		sed 's/\.text/ /gi' | \
 		sed 's/\.data/ /gi' | \
-		sed 's/main/main2/gi' > /tmp/$$.txt
+		sed 's/main/main_student/gi' > /tmp/$$.txt
 
 		cat ./test/ej1/$T /tmp/$$.txt > $GROUP/$E/test/test_exercise1_$T
 
@@ -79,6 +79,10 @@ for E in $LIST; do
 		rm /tmp/$$.txt
 	done
 
+
+	cat solution/ejercicio1.s | \
+	sed 's/.text/ /gi' > /tmp/ej1_teacher.txt
+
 	for T in $TEST_2; do
 		echo -n $T" "
 
@@ -89,35 +93,45 @@ for E in $LIST; do
 		sed 's/main/main_student/gi' | \
 		sed 's/string_compare:/string_compare_student:/gi' > /tmp/$$.txt
 
-		cat ./test/ej2/$T /tmp/$$.txt > /tmp/$$.txt2
-
-		#Introduce nuestra funcion string_compare y quita la suya
-		cat solution/ejercicio1.s | \
-		sed 's/.text/ /gi' > /tmp/$$.txt3
-
-		cat /tmp/$$.txt2 /tmp/$$.txt3 > $GROUP/$E/test/test_exercise2_$T
-
+		cat ./test/ej2/$T /tmp/$$.txt /tmp/ej1_teacher.txt > $GROUP/$E/test/test_exercise2_$T
 
 		./creator/creator.sh -a "./creator/architecture/RISC-V (RV32IMFD).json" -s $GROUP/$E/test/test_exercise2_$T -o min -r solution/output/output_ejercicio2_$T.txt --maxins 50000 > /tmp/$$.txt
 
 		if [ $? -eq 0 ]
 		then
-		   echo -n "1;" >> Notas_$GROUP.csv
+		   	./creator/creator.sh -a "./creator/architecture/RISC-V (RV32IMFD).json" -s $GROUP/$E/test/test_exercise2_$T --maxins 50000 &> /tmp/display_$$.txt
+
+		   	MAX=$(cat /tmp/display_$$.txt | grep "^[0-9]" | sort | tail -1)
+		   	ELTO=$(cat /tmp/display_$$.txt | grep "^[0-9]" | sort | tail -2 | head -1)
+
+		   	if [ $MAX -gt $ELTO ];
+		   	then
+		   		echo -n "1;" >> Notas_$GROUP.csv
+		   	else
+		   		echo -n "0;" >> Notas_$GROUP.csv
+
+		   		mkdir -p $GROUP/$E/test_problems
+
+				./creator/creator.sh -a "./creator/architecture/RISC-V (RV32IMFD).json" -s $GROUP/$E/test/test_exercise2_$T --maxins 50000 &> $GROUP/$E/test_problems/problem_exercise2_$T.txt
+
+				#./creator/creator.sh -a "./creator/architecture/RISC-V (RV32IMFD).json" -s $GROUP/$E/test/test_ejercicio1_$T | aha > $GROUP/$E/test_problems/problem_ejercicio1_$T.html
+				#wkhtmltopdf $GROUP/$E/test_problems/problem_ejercicio1_$T.html $GROUP/$E/test_problems/problem_ejercicio1_$T.pdf &> /dev/null
+		   	fi
 		else
 			echo -n "0;" >> Notas_$GROUP.csv
 
 			mkdir -p $GROUP/$E/test_problems
+
 			./creator/creator.sh -a "./creator/architecture/RISC-V (RV32IMFD).json" -s $GROUP/$E/test/test_exercise2_$T --maxins 50000 &> $GROUP/$E/test_problems/problem_exercise2_$T.txt
 
-			#./creator/creator.sh -a "./creator/architecture/RISC-V (RV32IMFD).json" -s $GROUP/$E/test/test_exercise1_$T | aha > $GROUP/$E/test_problems/problem_exercise1_$T.html
-			#wkhtmltopdf $GROUP/$E/test_problems/problem_exercise1_$T.html $GROUP/$E/test_problems/problem_exercise1_$T.pdf &> /dev/null
+			#./creator/creator.sh -a "./creator/architecture/RISC-V (RV32IMFD).json" -s $GROUP/$E/test/test_ejercicio1_$T | aha > $GROUP/$E/test_problems/problem_ejercicio1_$T.html
+			#wkhtmltopdf $GROUP/$E/test_problems/problem_ejercicio1_$T.html $GROUP/$E/test_problems/problem_ejercicio1_$T.pdf &> /dev/null
 		fi
 
 		cat /tmp/$$.txt >> $GROUP/$E/logs.txt
 		cat /tmp/$$.txt
+		rm /tmp/display_$$.txt
 		rm /tmp/$$.txt
-		rm /tmp/$$.txt2
-		rm /tmp/$$.txt3
 	done
 
 	for T in $TEST_3; do
@@ -130,13 +144,7 @@ for E in $LIST; do
 		sed 's/main/main_student/gi'  | \
 		sed 's/string_compare:/string_compare_student:/gi' > /tmp/$$.txt
 
-		cat ./test/ej3/$T /tmp/$$.txt > /tmp/$$.txt2
-
-		#Introduce nuestra funcion string_compare y quita la suya
-		cat solution/ejercicio1.s | \
-		sed 's/.text/ /gi' > /tmp/$$.txt3
-
-		cat /tmp/$$.txt2 /tmp/$$.txt3 > $GROUP/$E/test/test_exercise3_$T
+		cat ./test/ej3/$T /tmp/$$.txt /tmp/ej1_teacher.txt > $GROUP/$E/test/test_exercise3_$T
 
 
 		./creator/creator.sh -a "./creator/architecture/RISC-V (RV32IMFD).json" -s $GROUP/$E/test/test_exercise3_$T -o min -r solution/output/output_ejercicio3_$T.txt --maxins 50000 > /tmp/$$.txt
@@ -157,9 +165,9 @@ for E in $LIST; do
 		cat /tmp/$$.txt >> $GROUP/$E/logs.txt
 		cat /tmp/$$.txt
 		rm /tmp/$$.txt
-		rm /tmp/$$.txt2
-		rm /tmp/$$.txt3
 	done
+
+	rm /tmp/ej1_teacher.txt
 	echo ""
 	echo ""
 	echo "" >> Notas_$GROUP.csv
