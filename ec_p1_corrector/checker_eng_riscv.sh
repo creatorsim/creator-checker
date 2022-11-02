@@ -58,6 +58,7 @@ for E in $LIST; do
 
 		cat ./test/ej1/$T /tmp/$$.txt > $GROUP/$E/test/test_exercise1_$T
 
+
 		./creator/creator.sh -a "./creator/architecture/RISC-V (RV32IMFD).json" -s $GROUP/$E/test/test_exercise1_$T -o min -r solution/output/output_ejercicio1_$T.txt --maxins 50000 > /tmp/$$.txt
 		
 		if [ $? -eq 0 ]
@@ -85,8 +86,17 @@ for E in $LIST; do
 		cat $GROUP/$E/exercise2.s | \
 		sed 's/\.text/ /gi' | \
 		sed 's/\.data/ /gi' | \
-		sed 's/main/main2/gi' > /tmp/$$.txt
-		cat ./test/ej2/$T /tmp/$$.txt > $GROUP/$E/test/test_exercise2_$T
+		sed 's/main/main_student/gi' | \
+		sed 's/string_compare:/string_compare_student:/gi' > /tmp/$$.txt
+
+		cat ./test/ej2/$T /tmp/$$.txt > /tmp/$$.txt2
+
+		#Introduce nuestra funcion string_compare y quita la suya
+		cat solution/ejercicio1.s | \
+		sed 's/.text/ /gi' > /tmp/$$.txt3
+
+		cat /tmp/$$.txt2 /tmp/$$.txt3 > $GROUP/$E/test/test_exercise2_$T
+
 
 		./creator/creator.sh -a "./creator/architecture/RISC-V (RV32IMFD).json" -s $GROUP/$E/test/test_exercise2_$T -o min -r solution/output/output_ejercicio2_$T.txt --maxins 50000 > /tmp/$$.txt
 
@@ -106,6 +116,8 @@ for E in $LIST; do
 		cat /tmp/$$.txt >> $GROUP/$E/logs.txt
 		cat /tmp/$$.txt
 		rm /tmp/$$.txt
+		rm /tmp/$$.txt2
+		rm /tmp/$$.txt3
 	done
 
 	for T in $TEST_3; do
@@ -115,8 +127,17 @@ for E in $LIST; do
 		cat $GROUP/$E/exercise3.s | \
 		sed 's/\.text/ /gi' | \
 		sed 's/\.data/ /gi' | \
-		sed 's/main/main2/gi' > /tmp/$$.txt
-		cat ./test/ej3/$T /tmp/$$.txt > $GROUP/$E/test/test_exercise3_$T
+		sed 's/main/main_student/gi'  | \
+		sed 's/string_compare:/string_compare_student:/gi' > /tmp/$$.txt
+
+		cat ./test/ej3/$T /tmp/$$.txt > /tmp/$$.txt2
+
+		#Introduce nuestra funcion string_compare y quita la suya
+		cat solution/ejercicio1.s | \
+		sed 's/.text/ /gi' > /tmp/$$.txt3
+
+		cat /tmp/$$.txt2 /tmp/$$.txt3 > $GROUP/$E/test/test_exercise3_$T
+
 
 		./creator/creator.sh -a "./creator/architecture/RISC-V (RV32IMFD).json" -s $GROUP/$E/test/test_exercise3_$T -o min -r solution/output/output_ejercicio3_$T.txt --maxins 50000 > /tmp/$$.txt
 
@@ -136,6 +157,8 @@ for E in $LIST; do
 		cat /tmp/$$.txt >> $GROUP/$E/logs.txt
 		cat /tmp/$$.txt
 		rm /tmp/$$.txt
+		rm /tmp/$$.txt2
+		rm /tmp/$$.txt3
 	done
 	echo ""
 	echo ""
