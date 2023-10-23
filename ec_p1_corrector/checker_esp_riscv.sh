@@ -16,7 +16,6 @@ ls -1 $GROUP > $GROUP.txt
 LIST=$(cat $GROUP.txt | sed 's/.zip//g' | sort | uniq)
 TEST_1=$(ls -1 test/ej1 | grep -v "\.o")
 TEST_2=$(ls -1 test/ej2 | grep -v "\.o")
-TEST_3=$(ls -1 test/ej3 | grep -v "\.o")
 
 rm -fr Notas_$GROUP.csv
 touch Notas_$GROUP.csv
@@ -28,10 +27,6 @@ for T in $TEST_1; do
 done
 
 for T in $TEST_2; do
-	echo -n $T";" >> Notas_$GROUP.csv
-done
-
-for T in $TEST_3; do
 	echo -n $T";" >> Notas_$GROUP.csv
 done
 echo "" >> Notas_$GROUP.csv
@@ -59,7 +54,7 @@ for E in $LIST; do
 		cat ./test/ej1/$T /tmp/$$.txt > $GROUP/$E/test/test_ejercicio1_$T
 		
 
-		./creator/creator.sh -a "./creator/architecture/RISC-V (RV32IMFD).json" -s $GROUP/$E/test/test_ejercicio1_$T -o min -r solution/output/output_ejercicio1_$T.txt --maxins 50000 > /tmp/$$.txt
+		./creator/creator.sh -a "./creator/architecture/RISC_V_RV32IMFD.json" -s $GROUP/$E/test/test_ejercicio1_$T -o min -r solution/output/output_ejercicio1_$T.txt --maxins 50000 > /tmp/$$.txt
 		
 		if [ $? -eq 0 ]
 		then
@@ -68,9 +63,9 @@ for E in $LIST; do
 			echo -n "0;" >> Notas_$GROUP.csv
 
 			mkdir -p $GROUP/$E/test_problems
-			./creator/creator.sh -a "./creator/architecture/RISC-V (RV32IMFD).json" -s $GROUP/$E/test/test_ejercicio1_$T --maxins 50000 &> $GROUP/$E/test_problems/problem_ejercicio1_$T.txt
+			./creator/creator.sh -a "./creator/architecture/RISC_V_RV32IMFD.json" -s $GROUP/$E/test/test_ejercicio1_$T --maxins 50000 &> $GROUP/$E/test_problems/problem_ejercicio1_$T.txt
 
-			#./creator/creator.sh -a "./creator/architecture/RISC-V (RV32IMFD).json" -s $GROUP/$E/test/test_ejercicio1_$T | aha > $GROUP/$E/test_problems/problem_ejercicio1_$T.html
+			#./creator/creator.sh -a "./creator/architecture/RISC_V_RV32IMFD.json" -s $GROUP/$E/test/test_ejercicio1_$T | aha > $GROUP/$E/test_problems/problem_ejercicio1_$T.html
 			#wkhtmltopdf $GROUP/$E/test_problems/problem_ejercicio1_$T.html $GROUP/$E/test_problems/problem_ejercicio1_$T.pdf &> /dev/null
 		fi
 
@@ -79,9 +74,6 @@ for E in $LIST; do
 		rm /tmp/$$.txt
 	done
 
-
-    cat solution/ejercicio1.s | \
-	sed 's/.text/ /gi' > /tmp/ej1_teacher.txt
 
 	for T in $TEST_2; do
 		echo -n $T" "
@@ -91,65 +83,13 @@ for E in $LIST; do
 		sed 's/\.text/ /gi' | \
 		sed 's/\.data/ /gi' | \
 		sed 's/main/main_student/gi' | \
-		sed 's/string_compare:/string_compare_student:/gi' > /tmp/$$.txt
+		sed 's/^[\s]*sin:/sin_student:/gi' > /tmp/$$.txt
 
-		cat ./test/ej2/$T /tmp/$$.txt /tmp/ej1_teacher.txt > $GROUP/$E/test/test_ejercicio2_$T
+		cat ./test/ej2/$T /tmp/$$.txt > $GROUP/$E/test/test_ejercicio2_$T
+		
 
-		./creator/creator.sh -a "./creator/architecture/RISC-V (RV32IMFD).json" -s $GROUP/$E/test/test_ejercicio2_$T -o min -r solution/output/output_ejercicio2_$T.txt --maxins 50000 > /tmp/$$.txt
-
-		if [ $? -eq 0 ]
-		then
-		   	./creator/creator.sh -a "./creator/architecture/RISC-V (RV32IMFD).json" -s $GROUP/$E/test/test_ejercicio2_$T --maxins 50000 &> /tmp/display_$$.txt
-
-		   	MAX=$(cat /tmp/display_$$.txt | grep "^[0-9]" | sort | tail -1)
-		   	ELTO=$(cat /tmp/display_$$.txt | grep "^[0-9]" | sort | tail -2 | head -1)
-
-		   	if [ $MAX -gt $ELTO ];
-		   	then
-		   		echo -n "1;" >> Notas_$GROUP.csv
-		   	else
-		   		echo -n "0;" >> Notas_$GROUP.csv
-
-		   		mkdir -p $GROUP/$E/test_problems
-
-				./creator/creator.sh -a "./creator/architecture/RISC-V (RV32IMFD).json" -s $GROUP/$E/test/test_ejercicio2_$T --maxins 50000 &> $GROUP/$E/test_problems/problem_ejercicio2_$T.txt
-
-				#./creator/creator.sh -a "./creator/architecture/RISC-V (RV32IMFD).json" -s $GROUP/$E/test/test_ejercicio1_$T | aha > $GROUP/$E/test_problems/problem_ejercicio1_$T.html
-				#wkhtmltopdf $GROUP/$E/test_problems/problem_ejercicio1_$T.html $GROUP/$E/test_problems/problem_ejercicio1_$T.pdf &> /dev/null
-		   	fi
-		else
-			echo -n "0;" >> Notas_$GROUP.csv
-
-			mkdir -p $GROUP/$E/test_problems
-
-			./creator/creator.sh -a "./creator/architecture/RISC-V (RV32IMFD).json" -s $GROUP/$E/test/test_ejercicio2_$T --maxins 50000 &> $GROUP/$E/test_problems/problem_ejercicio2_$T.txt
-
-			#./creator/creator.sh -a "./creator/architecture/RISC-V (RV32IMFD).json" -s $GROUP/$E/test/test_ejercicio1_$T | aha > $GROUP/$E/test_problems/problem_ejercicio1_$T.html
-			#wkhtmltopdf $GROUP/$E/test_problems/problem_ejercicio1_$T.html $GROUP/$E/test_problems/problem_ejercicio1_$T.pdf &> /dev/null
-		fi
-
-		cat /tmp/$$.txt >> $GROUP/$E/logs.txt
-		cat /tmp/$$.txt
-		rm /tmp/display_$$.txt
-		rm /tmp/$$.txt
-	done
-
-
-	for T in $TEST_3; do
-		echo -n $T" "
-
-		#Comparar con solucion correcta
-		cat $GROUP/$E/ejercicio3.s | \
-		sed 's/\.text/ /gi' | \
-		sed 's/\.data/ /gi' | \
-		sed 's/main/main_student/gi'  | \
-		sed 's/string_compare:/string_compare_student:/gi' > /tmp/$$.txt
-
-		cat ./test/ej3/$T /tmp/$$.txt /tmp/ej1_teacher.txt > $GROUP/$E/test/test_ejercicio3_$T
-
-
-		./creator/creator.sh -a "./creator/architecture/RISC-V (RV32IMFD).json" -s $GROUP/$E/test/test_ejercicio3_$T -o min -r solution/output/output_ejercicio3_$T.txt --maxins 50000 > /tmp/$$.txt
-
+		./creator/creator.sh -a "./creator/architecture/RISC_V_RV32IMFD.json" -s $GROUP/$E/test/test_ejercicio2_$T -o min -r solution/output/output_ejercicio2_$T.txt --maxins 50000 > /tmp/$$.txt
+		
 		if [ $? -eq 0 ]
 		then
 		   echo -n "1;" >> Notas_$GROUP.csv
@@ -157,11 +97,10 @@ for E in $LIST; do
 			echo -n "0;" >> Notas_$GROUP.csv
 
 			mkdir -p $GROUP/$E/test_problems
+			./creator/creator.sh -a "./creator/architecture/RISC_V_RV32IMFD.json" -s $GROUP/$E/test/test_ejercicio2_$T --maxins 50000 &> $GROUP/$E/test_problems/problem_ejercicio2_$T.txt
 
-			./creator/creator.sh -a "./creator/architecture/RISC-V (RV32IMFD).json" -s $GROUP/$E/test/test_ejercicio3_$T --maxins 50000 &> $GROUP/$E/test_problems/problem_ejercicio3_$T.txt
-
-			#./creator/creator.sh -a "./creator/architecture/RISC-V (RV32IMFD).json" -s $GROUP/$E/test/test_ejercicio1_$T | aha > $GROUP/$E/test_problems/problem_ejercicio1_$T.html
-			#wkhtmltopdf $GROUP/$E/test_problems/problem_ejercicio1_$T.html $GROUP/$E/test_problems/problem_ejercicio1_$T.pdf &> /dev/null
+			#./creator/creator.sh -a "./creator/architecture/RISC_V_RV32IMFD.json" -s $GROUP/$E/test/test_ejercicio2_$T | aha > $GROUP/$E/test_problems/problem_ejercicio2_$T.html
+			#wkhtmltopdf $GROUP/$E/test_problems/problem_ejercicio2_$T.html $GROUP/$E/test_problems/problem_ejercicio2_$T.pdf &> /dev/null
 		fi
 
 		cat /tmp/$$.txt >> $GROUP/$E/logs.txt
@@ -169,7 +108,6 @@ for E in $LIST; do
 		rm /tmp/$$.txt
 	done
 	
-	rm /tmp/ej1_teacher.txt
 	echo ""
 	echo ""
 	echo "" >> Notas_$GROUP.csv
