@@ -1,9 +1,0 @@
-90
-corrector.sh
-creator
-mk_solution.sh
-Notas_90.csv
-package.json
-solution
-test
-unzip_all.sh

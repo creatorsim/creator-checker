@@ -54,7 +54,7 @@ for E in $LIST; do
 		cat ./test/ej1/$T /tmp/$$.txt > $GROUP/$E/test/test_ejercicio1_$T
 		
 
-		./creator/creator.sh -a "./creator/architecture/RISC_V_RV32IMFD.json" -s $GROUP/$E/test/test_ejercicio1_$T -o min -r solution/output/output_ejercicio1_$T.txt --maxins 50000 > /tmp/$$.txt
+		/creator/creator.sh -a "/creator/architecture/RISC_V_RV32IMFD.json" -s $GROUP/$E/test/test_ejercicio1_$T -o min -r solution/output/output_ejercicio1_$T.txt --maxins 50000 > /tmp/$$.txt
 		
 		if [ $? -eq 0 ]
 		then
@@ -63,9 +63,9 @@ for E in $LIST; do
 			echo -n "0;" >> Notas_$GROUP.csv
 
 			mkdir -p $GROUP/$E/test_problems
-			./creator/creator.sh -a "./creator/architecture/RISC_V_RV32IMFD.json" -s $GROUP/$E/test/test_ejercicio1_$T --maxins 50000 &> $GROUP/$E/test_problems/problem_ejercicio1_$T.txt
+			/creator/creator.sh -a "/creator/architecture/RISC_V_RV32IMFD.json" -s $GROUP/$E/test/test_ejercicio1_$T --maxins 50000 &> $GROUP/$E/test_problems/problem_ejercicio1_$T.txt
 
-			#./creator/creator.sh -a "./creator/architecture/RISC_V_RV32IMFD.json" -s $GROUP/$E/test/test_ejercicio1_$T | aha > $GROUP/$E/test_problems/problem_ejercicio1_$T.html
+			#/creator/creator.sh -a "/creator/architecture/RISC_V_RV32IMFD.json" -s $GROUP/$E/test/test_ejercicio1_$T | aha > $GROUP/$E/test_problems/problem_ejercicio1_$T.html
 			#wkhtmltopdf $GROUP/$E/test_problems/problem_ejercicio1_$T.html $GROUP/$E/test_problems/problem_ejercicio1_$T.pdf &> /dev/null
 		fi
 
@@ -88,7 +88,7 @@ for E in $LIST; do
 		cat ./test/ej2/$T /tmp/$$.txt > $GROUP/$E/test/test_ejercicio2_$T
 		
 
-		./creator/creator.sh -a "./creator/architecture/RISC_V_RV32IMFD.json" -s $GROUP/$E/test/test_ejercicio2_$T -o min -r solution/output/output_ejercicio2_$T.txt --maxins 50000 > /tmp/$$.txt
+		/creator/creator.sh -a "/creator/architecture/RISC_V_RV32IMFD.json" -s $GROUP/$E/test/test_ejercicio2_$T -o min -r solution/output/output_ejercicio2_$T.txt --maxins 50000 > /tmp/$$.txt
 		
 		if [ $? -eq 0 ]
 		then
@@ -97,9 +97,9 @@ for E in $LIST; do
 			echo -n "0;" >> Notas_$GROUP.csv
 
 			mkdir -p $GROUP/$E/test_problems
-			./creator/creator.sh -a "./creator/architecture/RISC_V_RV32IMFD.json" -s $GROUP/$E/test/test_ejercicio2_$T --maxins 50000 &> $GROUP/$E/test_problems/problem_ejercicio2_$T.txt
+			/creator/creator.sh -a "/creator/architecture/RISC_V_RV32IMFD.json" -s $GROUP/$E/test/test_ejercicio2_$T --maxins 50000 &> $GROUP/$E/test_problems/problem_ejercicio2_$T.txt
 
-			#./creator/creator.sh -a "./creator/architecture/RISC_V_RV32IMFD.json" -s $GROUP/$E/test/test_ejercicio2_$T | aha > $GROUP/$E/test_problems/problem_ejercicio2_$T.html
+			#/creator/creator.sh -a "/creator/architecture/RISC_V_RV32IMFD.json" -s $GROUP/$E/test/test_ejercicio2_$T | aha > $GROUP/$E/test_problems/problem_ejercicio2_$T.html
 			#wkhtmltopdf $GROUP/$E/test_problems/problem_ejercicio2_$T.html $GROUP/$E/test_problems/problem_ejercicio2_$T.pdf &> /dev/null
 		fi
 
