@@ -1,26 +1,31 @@
 #!/bin/bash
-
 #set -x
 
+# check arguments
 if [ "$#" -lt 1 ];
 then
-    echo "Error. Not enough arguments.\n"
-    echo "./corrector <group>"
+    echo ""
+    echo " CREATOR checker"
+    echo "  Usage: ./corrector <reduced group>"
+    echo ""
     exit -1
 fi
 
+# set initial values
 GROUP=$1
+ENAME1=exercise1
+ENAME2=exercise2
 
 ls -1 $GROUP > $GROUP.txt
 
-LIST=$(cat $GROUP.txt | sed 's/.zip//g' | sort | uniq)
+LIST=$(cat $GROUP.txt | sed 's/.zip//g' | grep -v index.html | sort | uniq)
 TEST_1=$(ls -1 test/ej1 | grep -v "\.o")
 TEST_2=$(ls -1 test/ej2 | grep -v "\.o")
 
+# Header
 rm -fr Notas_$GROUP.csv
-touch Notas_$GROUP.csv
+touch  Notas_$GROUP.csv
 
-#Header
 echo -n "Group;" >> Notas_$GROUP.csv
 for T in $TEST_1; do
 	echo -n $T";" >> Notas_$GROUP.csv
@@ -31,9 +36,16 @@ for T in $TEST_2; do
 done
 echo "" >> Notas_$GROUP.csv
 
-#Grades
+#####
+rm -fr            $GROUP/index.html
+touch             $GROUP/index.html
+echo "<html>" >>  $GROUP/index.html
+#####
+
+# Grades
 for E in $LIST; do
-	echo $E
+
+	echo " ### $E ###################### "
 	echo -n $E";" >> Notas_$GROUP.csv
 
 	rm -fr $GROUP/$E/test
@@ -42,75 +54,137 @@ for E in $LIST; do
 
 	mkdir -p $GROUP/$E/test
 
+	#######
+	echo "<table>"           >> $GROUP/index.html
+	echo "<tr>"              >> $GROUP/index.html
+	echo "<td>Group</td>"    >> $GROUP/index.html
+	echo "<td>Test</td>"     >> $GROUP/index.html
+	echo "<td>OK</td>"       >> $GROUP/index.html
+	echo "<td>Output</td>"   >> $GROUP/index.html
+	echo "<td>Src</td>"      >> $GROUP/index.html
+	echo "</tr>"             >> $GROUP/index.html
+
+	rm   -fr          $GROUP/$E/test_output
+	mkdir -p          $GROUP/$E/test_output
+	#######
+
 	for T in $TEST_1; do
+
 		echo -n $T" "
 
-		#Comparar con solucion correcta
-		cat $GROUP/$E/exercise1.s | \
-		sed 's/\.text/ /gi' | \
-		sed 's/\.data/ /gi' | \
+		# Build test code
+		cat $GROUP/$E/${ENAME1}.s | \
+		sed 's/\.text/ /gi'     | \
+		sed 's/\.data/ /gi'     | \
 		sed 's/\bmain:/main_student:/gi' > /tmp/$$.txt
 
-		cat ./test/ej1/$T /tmp/$$.txt > $GROUP/$E/test/test_exercise1_$T
+		cat ./test/ej1/$T /tmp/$$.txt  >  $GROUP/$E/test/test_${ENAME1}_$T
 		
-
-		/creator/creator.sh -a "/creator/architecture/RISC_V_RV32IMFD.json" -s $GROUP/$E/test/test_exercise1_$T -o min -r solution/output/output_exercise1_$T.txt --maxins 50000 > /tmp/$$.txt
+                # creator...
+		/creator/creator.sh -a "/creator/architecture/RISC_V_RV32IMFD.json" -s $GROUP/$E/test/test_${ENAME1}_$T -o min -r solution/output/output_${ENAME1}_$T.txt --maxins 50000 > /tmp/$$.txt
 		
 		if [ $? -eq 0 ]
 		then
 		   echo -n "1;" >> Notas_$GROUP.csv
+		   OK=1
 		else
-			echo -n "0;" >> Notas_$GROUP.csv
+		   echo -n "0;" >> Notas_$GROUP.csv
+		   OK=0
 
 			mkdir -p $GROUP/$E/test_problems
-			/creator/creator.sh -a "/creator/architecture/RISC_V_RV32IMFD.json" -s $GROUP/$E/test/test_exercise1_$T --maxins 50000 &> $GROUP/$E/test_problems/problem_exercise1_$T.txt
+			/creator/creator.sh -a "/creator/architecture/RISC_V_RV32IMFD.json" -s $GROUP/$E/test/test_${ENAME1}_$T --maxins 50000 &> $GROUP/$E/test_problems/problem_${ENAME1}_$T.txt
 
-			#/creator/creator.sh -a "/creator/architecture/RISC_V_RV32IMFD.json" -s $GROUP/$E/test/test_exercise1_$T | aha > $GROUP/$E/test_problems/problem_exercise1_$T.html
-			#wkhtmltopdf $GROUP/$E/test_problems/problem_exercise1_$T.html $GROUP/$E/test_problems/problem_exercise1_$T.pdf &> /dev/null
+			#/creator/creator.sh -a "/creator/architecture/RISC_V_RV32IMFD.json" -s $GROUP/$E/test/test_${ENAME1}_$T | aha > $GROUP/$E/test_problems/problem_${ENAME1}_$T.html
+			#wkhtmltopdf $GROUP/$E/test_problems/problem_${ENAME1}_$T.html $GROUP/$E/test_problems/problem_${ENAME1}_$T.pdf &> /dev/null
 		fi
+
+                #######
+		echo ""                                                             >> $GROUP/index.html
+		echo "<tr>"                                                         >> $GROUP/index.html
+		echo "<td>$E</td>"                                                  >> $GROUP/index.html
+		echo "<td>$T</td>"                                                  >> $GROUP/index.html
+		echo "<td>$OK</td>"                                                 >> $GROUP/index.html
+		echo "<td><a href=\"./$E/test_output/s1_$T.txt\">link</a></td>"     >> $GROUP/index.html
+		echo "<td><a href=\"./$E/test_output/e1_$T.txt\">link</a></td>"     >> $GROUP/index.html
+		echo "</tr>"                                                        >> $GROUP/index.html
+
+		cp $GROUP/$E/test/test_${ENAME1}_$T   $GROUP/$E/test_output/e1_$T.txt
+		cp /tmp/$$.txt                        $GROUP/$E/test_output/s1_$T.txt
+                #######
 
 		cat /tmp/$$.txt >> $GROUP/$E/logs.txt
 		cat /tmp/$$.txt
-		rm /tmp/$$.txt
+		rm  /tmp/$$.txt
 	done
 
 
+	#######
+	echo "<tr>"              >> $GROUP/index.html
+	echo "<td>Group</td>"    >> $GROUP/index.html
+	echo "<td>Test</td>"     >> $GROUP/index.html
+	echo "<td>OK</td>"       >> $GROUP/index.html
+	echo "<td>Output</td>"   >> $GROUP/index.html
+	echo "<td>Src</td>"      >> $GROUP/index.html
+	echo "</tr>"             >> $GROUP/index.html
+	#######
+
 	for T in $TEST_2; do
+
 		echo -n $T" "
 
 		#Comparar con solucion correcta
-		cat $GROUP/$E/exercise2.s | \
+		cat $GROUP/$E/${ENAME2}.s | \
 		sed 's/\.text/ /gi' | \
 		sed 's/\.data/ /gi' | \
 		sed 's/\bmain:/main_student:/gi' | \
 		sed 's/\bsin:/sin_student:/gi' > /tmp/$$.txt
 
-		cat ./test/ej2/$T /tmp/$$.txt > $GROUP/$E/test/test_exercise2_$T
+		cat ./test/ej2/$T /tmp/$$.txt > $GROUP/$E/test/test_${ENAME2}_$T
 		
 
-		/creator/creator.sh -a "/creator/architecture/RISC_V_RV32IMFD.json" -s $GROUP/$E/test/test_exercise2_$T -o min -r solution/output/output_exercise2_$T.txt --maxins 50000 > /tmp/$$.txt
+		/creator/creator.sh -a "/creator/architecture/RISC_V_RV32IMFD.json" -s $GROUP/$E/test/test_${ENAME2}_$T -o min -r solution/output/output_${ENAME2}_$T.txt --maxins 50000 > /tmp/$$.txt
 		
 		if [ $? -eq 0 ]
 		then
-		   echo -n "1;" >> Notas_$GROUP.csv
+		        echo -n "1;" >> Notas_$GROUP.csv
 		else
 			echo -n "0;" >> Notas_$GROUP.csv
 
 			mkdir -p $GROUP/$E/test_problems
-			/creator/creator.sh -a "/creator/architecture/RISC_V_RV32IMFD.json" -s $GROUP/$E/test/test_exercise2_$T --maxins 50000 &> $GROUP/$E/test_problems/problem_exercise2_$T.txt
+			/creator/creator.sh -a "/creator/architecture/RISC_V_RV32IMFD.json" -s $GROUP/$E/test/test_${ENAME2}_$T --maxins 50000 &> $GROUP/$E/test_problems/problem_${ENAME2}_$T.txt
 
-			#/creator/creator.sh -a "/creator/architecture/RISC_V_RV32IMFD.json" -s $GROUP/$E/test/test_exercise2_$T | aha > $GROUP/$E/test_problems/problem_exercise2_$T.html
-			#wkhtmltopdf $GROUP/$E/test_problems/problem_exercise2_$T.html $GROUP/$E/test_problems/problem_exercise2_$T.pdf &> /dev/null
+			#/creator/creator.sh -a "/creator/architecture/RISC_V_RV32IMFD.json" -s $GROUP/$E/test/test_${ENAME2}_$T | aha > $GROUP/$E/test_problems/problem_${ENAME2}_$T.html
+			#wkhtmltopdf $GROUP/$E/test_problems/problem_${ENAME2}_$T.html $GROUP/$E/test_problems/problem_${ENAME2}_$T.pdf &> /dev/null
 		fi
+
+                #######
+		echo ""                                                             >> $GROUP/index.html
+		echo "<tr>"                                                         >> $GROUP/index.html
+		echo "<td>$E</td>"                                                  >> $GROUP/index.html
+		echo "<td>$T</td>"                                                  >> $GROUP/index.html
+		echo "<td>$OK</td>"                                                 >> $GROUP/index.html
+		echo "<td><a href=\"./$E/test_output/s2_$T.txt\">link</a></td>"     >> $GROUP/index.html
+		echo "<td><a href=\"./$E/test_output/e2_$T.txt\">link</a></td>"     >> $GROUP/index.html
+		echo "</tr>"                                                        >> $GROUP/index.html
+
+		cp $GROUP/$E/test/test_${ENAME2}_$T   $GROUP/$E/test_output/e2_$T.txt
+		cp /tmp/$$.txt                        $GROUP/$E/test_output/s2_$T.txt
+                #######
 
 		cat /tmp/$$.txt >> $GROUP/$E/logs.txt
 		cat /tmp/$$.txt
-		rm /tmp/$$.txt
+		rm  /tmp/$$.txt
 	done
 	
+	#######
+	echo "</table>"        >> $GROUP/index.html
+	echo "</html>"         >> $GROUP/index.html
+	#######
+
 	echo ""
 	echo ""
 	echo "" >> Notas_$GROUP.csv
 done
 
 rm $GROUP.txt
+

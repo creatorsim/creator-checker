@@ -9,9 +9,11 @@ RUN apt update && apt-get install -y \
 	sudo \
 	wget \
 	curl \
+	lynx \
 	git \
 	npm \
 	vim \
+	aha \
 	7zip \
 	rar \
 	unrar \

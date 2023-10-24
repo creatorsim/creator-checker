@@ -1,29 +1,31 @@
 #!/bin/bash
 #set -x
 
+# check arguments
 if [ "$#" -lt 1 ];
 then
     echo ""
-    echo " Error: not enough arguments.\n"
-    echo " Usage: ./corrector <reduced group>"
+    echo " CREATOR checker"
+    echo "  Usage: ./corrector <reduced group>"
     echo ""
     exit -1
 fi
 
+# set initial values
 GROUP=$1
 ENAME1=ejercicio1
 ENAME2=ejercicio2
 
 ls -1 $GROUP > $GROUP.txt
 
-LIST=$(cat $GROUP.txt | sed 's/.zip//g' | sort | uniq)
+LIST=$(cat $GROUP.txt | sed 's/.zip//g' | grep -v index.html | sort | uniq)
 TEST_1=$(ls -1 test/ej1 | grep -v "\.o")
 TEST_2=$(ls -1 test/ej2 | grep -v "\.o")
 
+# Header
 rm -fr Notas_$GROUP.csv
 touch  Notas_$GROUP.csv
 
-# Header
 echo -n "Group;" >> Notas_$GROUP.csv
 for T in $TEST_1; do
 	echo -n $T";" >> Notas_$GROUP.csv
@@ -115,6 +117,7 @@ for E in $LIST; do
 		rm  /tmp/$$.txt
 	done
 
+
 	#######
 	echo "<tr>"              >> $GROUP/index.html
 	echo "<td>Group</td>"    >> $GROUP/index.html
@@ -126,6 +129,7 @@ for E in $LIST; do
 	#######
 
 	for T in $TEST_2; do
+
 		echo -n $T" "
 
 		#Comparar con solucion correcta
@@ -164,7 +168,7 @@ for E in $LIST; do
 		echo "</tr>"                                                        >> $GROUP/index.html
 
 		cp $GROUP/$E/test/test_${ENAME2}_$T   $GROUP/$E/test_output/e2_$T.txt
-		cp /tmp/$$.txt  $GROUP/$E/test_output/s2_$T.txt
+		cp /tmp/$$.txt                        $GROUP/$E/test_output/s2_$T.txt
                 #######
 
 		cat /tmp/$$.txt >> $GROUP/$E/logs.txt
