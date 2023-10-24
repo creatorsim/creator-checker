@@ -2,5 +2,4 @@
 
 
 .text
-main:
-
+	main:

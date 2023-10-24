@@ -49,7 +49,7 @@ for E in $LIST; do
 		cat $GROUP/$E/exercise1.s | \
 		sed 's/\.text/ /gi' | \
 		sed 's/\.data/ /gi' | \
-		sed 's/main/main_student/gi' > /tmp/$$.txt
+		sed 's/\bmain:/main_student:/gi' > /tmp/$$.txt
 
 		cat ./test/ej1/$T /tmp/$$.txt > $GROUP/$E/test/test_exercise1_$T
 		
@@ -82,8 +82,8 @@ for E in $LIST; do
 		cat $GROUP/$E/exercise2.s | \
 		sed 's/\.text/ /gi' | \
 		sed 's/\.data/ /gi' | \
-		sed 's/main/main_student/gi' | \
-		sed 's/^[\s]*sin:/sin_student:/gi' > /tmp/$$.txt
+		sed 's/\bmain:/main_student:/gi' | \
+		sed 's/\bsin:/sin_student:/gi' > /tmp/$$.txt
 
 		cat ./test/ej2/$T /tmp/$$.txt > $GROUP/$E/test/test_exercise2_$T
 		
