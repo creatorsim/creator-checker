@@ -15,6 +15,8 @@ fi
 GROUP=$1
 ENAME1=Exercise1
 ENAME2=Exercise2
+ENAMESOL1=ejercicio1
+ENAMESOL2=ejercicio2
 
 ls -1 $GROUP > $GROUP.txt
 
@@ -81,7 +83,7 @@ for E in $LIST; do
         cat ./test/ej1/$T /tmp/$$.txt  >  $GROUP/$E/test/test_${ENAME1}_$T
         
         # creator...
-        /creator/creator.sh -a "/creator/architecture/RISC_V_RV32IMFD.json" -s $GROUP/$E/test/test_${ENAME1}_$T -l test/pow.o -o min -r solution/output/output_${ENAME1}_$T.txt --maxins 100000 > /tmp/$$.txt
+        /creator/creator.sh -a "/creator/architecture/RISC_V_RV32IMFD.json" -s $GROUP/$E/test/test_${ENAME1}_$T -l test/pow.o -o min -r solution/output/output_${ENAMESOL1}_$T.txt --maxins 100000 > /tmp/$$.txt
         
         if [ $? -eq 0 ]
         then
@@ -142,7 +144,7 @@ for E in $LIST; do
         cat ./test/ej2/$T /tmp/$$.txt > $GROUP/$E/test/test_${ENAME2}_$T
         
 
-        /creator/creator.sh -a "/creator/architecture/RISC_V_RV32IMFD.json" -s $GROUP/$E/test/test_${ENAME2}_$T -l test/pow.o -o min -r solution/output/output_${ENAME2}_$T.txt --maxins 100000 > /tmp/$$.txt
+        /creator/creator.sh -a "/creator/architecture/RISC_V_RV32IMFD.json" -s $GROUP/$E/test/test_${ENAME2}_$T -l test/pow.o -o min -r solution/output/output_${ENAMESOL2}_$T.txt --maxins 100000 > /tmp/$$.txt
         
         if [ $? -eq 0 ]
         then
