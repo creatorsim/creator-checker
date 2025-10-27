@@ -13,16 +13,14 @@ fi
 
 # set initial values
 GROUP=$1
-ENAME1=Exercise1
-ENAME2=Exercise2
-ENAMESOL1=ejercicio1
-ENAMESOL2=ejercicio2
+ENAME1=exercises
 
 ls -1 $GROUP > $GROUP.txt
 
 LIST=$(cat $GROUP.txt | sed 's/.zip//g' | grep -v index.html | sort | uniq)
 TEST_1=$(ls -1 test/ej1 | grep -v "\.o")
 TEST_2=$(ls -1 test/ej2 | grep -v "\.o")
+TEST_3=$(ls -1 test/ej3 | grep -v "\.o")
 
 # Header
 rm -fr Notas_$GROUP.csv
@@ -34,6 +32,11 @@ for T in $TEST_1; do
 done
 
 for T in $TEST_2; do
+    echo -n $T";" >> Notas_$GROUP.csv
+done
+echo "" >> Notas_$GROUP.csv
+
+for T in $TEST_3; do
     echo -n $T";" >> Notas_$GROUP.csv
 done
 echo "" >> Notas_$GROUP.csv
@@ -75,7 +78,7 @@ for E in $LIST; do
         echo -n $T" "
 
         # Build test code
-        cat $GROUP/$E/${ENAME1}.S | \
+        cat $GROUP/$E/${ENAME1}.s | \
         sed 's/\.text/ /gi'     | \
         sed 's/\.data/ /gi'     | \
         sed 's/\bmain:/main_student:/gi' > /tmp/$$.txt
@@ -83,7 +86,7 @@ for E in $LIST; do
         cat ./test/ej1/$T /tmp/$$.txt  >  $GROUP/$E/test/test_${ENAME1}_$T
         
         # creator...
-        /creator/creator.sh -a "/creator/architecture/RISC_V_RV32IMFD.json" -s $GROUP/$E/test/test_${ENAME1}_$T -l test/pow.o -o min -r solution/output/output_${ENAMESOL1}_$T.txt --maxins 100000 > /tmp/$$.txt
+        /creator/creator.sh -a "/creator/architecture/RISC_V_RV32IMFD.json" -s $GROUP/$E/test/test_${ENAME1}_$T -l test/pow.o -o min -r solution/output/output_${ENAME1}_$T.txt --maxins 100000 > /tmp/$$.txt
         
         if [ $? -eq 0 ]
         then
@@ -134,29 +137,30 @@ for E in $LIST; do
 
         echo -n $T" "
 
-        #Comparar con solucion correcta
-        cat $GROUP/$E/${ENAME2}.S | \
-        sed 's/\.text/ /gi' | \
-        sed 's/\.data/ /gi' | \
-        sed 's/\bmain:/main_student:/gi' | \
-        sed 's/\bCompute_Integral:/Compute_Integral_student:/gi' > /tmp/$$.txt
+        # Build test code
+        cat $GROUP/$E/${ENAME1}.s | \
+        sed 's/\.text/ /gi'     | \
+        sed 's/\.data/ /gi'     | \
+        sed 's/\bmain:/main_student:/gi' > /tmp/$$.txt
 
-        cat ./test/ej2/$T /tmp/$$.txt > $GROUP/$E/test/test_${ENAME2}_$T
+        cat ./test/ej2/$T /tmp/$$.txt  >  $GROUP/$E/test/test_${ENAME1}_$T
         
-
-        /creator/creator.sh -a "/creator/architecture/RISC_V_RV32IMFD.json" -s $GROUP/$E/test/test_${ENAME2}_$T -l test/pow.o -o min -r solution/output/output_${ENAMESOL2}_$T.txt --maxins 100000 > /tmp/$$.txt
+        # creator...
+        /creator/creator.sh -a "/creator/architecture/RISC_V_RV32IMFD.json" -s $GROUP/$E/test/test_${ENAME1}_$T -l test/pow.o -o min -r solution/output/output_${ENAME1}_$T.txt --maxins 1000000 > /tmp/$$.txt
         
         if [ $? -eq 0 ]
         then
-                echo -n "1;" >> Notas_$GROUP.csv
+           echo -n "1;" >> Notas_$GROUP.csv
+           OK=1
         else
-            echo -n "0;" >> Notas_$GROUP.csv
+           echo -n "0;" >> Notas_$GROUP.csv
+           OK=0
 
             mkdir -p $GROUP/$E/test_problems
-            /creator/creator.sh -a "/creator/architecture/RISC_V_RV32IMFD.json" -s $GROUP/$E/test/test_${ENAME2}_$T -l test/pow.o --maxins 100000 &> $GROUP/$E/test_problems/problem_${ENAME2}_$T.txt
+            /creator/creator.sh -a "/creator/architecture/RISC_V_RV32IMFD.json" -s $GROUP/$E/test/test_${ENAME1}_$T -l test/pow.o --maxins 1000000 &> $GROUP/$E/test_problems/problem_${ENAME1}_$T.txt
 
-            #/creator/creator.sh -a "/creator/architecture/RISC_V_RV32IMFD.json" -s $GROUP/$E/test/test_${ENAME2}_$T | aha > $GROUP/$E/test_problems/problem_${ENAME2}_$T.html
-            #wkhtmltopdf $GROUP/$E/test_problems/problem_${ENAME2}_$T.html $GROUP/$E/test_problems/problem_${ENAME2}_$T.pdf &> /dev/null
+            #/creator/creator.sh -a "/creator/architecture/RISC_V_RV32IMFD.json" -s $GROUP/$E/test/test_${ENAME1}_$T | aha > $GROUP/$E/test_problems/problem_${ENAME1}_$T.html
+            #wkhtmltopdf $GROUP/$E/test_problems/problem_${ENAME1}_$T.html $GROUP/$E/test_problems/problem_${ENAME1}_$T.pdf &> /dev/null
         fi
 
         #######
@@ -169,8 +173,67 @@ for E in $LIST; do
         echo "<td><a href=\"./$E/test_output/e2_$T.txt\">link</a></td>"     >> $GROUP/index.html
         echo "</tr>"                                                        >> $GROUP/index.html
 
-        cp $GROUP/$E/test/test_${ENAME2}_$T   $GROUP/$E/test_output/e2_$T.txt
+        cp $GROUP/$E/test/test_${ENAME1}_$T   $GROUP/$E/test_output/e2_$T.txt
         cp /tmp/$$.txt                        $GROUP/$E/test_output/s2_$T.txt
+        #######
+
+        cat /tmp/$$.txt >> $GROUP/$E/logs.txt
+        cat /tmp/$$.txt
+        rm  /tmp/$$.txt
+    done
+
+
+    #######
+    echo "<tr>"              >> $GROUP/index.html
+    echo "<td>Group</td>"    >> $GROUP/index.html
+    echo "<td>Test</td>"     >> $GROUP/index.html
+    echo "<td>OK</td>"       >> $GROUP/index.html
+    echo "<td>Output</td>"   >> $GROUP/index.html
+    echo "<td>Src</td>"      >> $GROUP/index.html
+    echo "</tr>"             >> $GROUP/index.html
+    #######
+
+    for T in $TEST_3; do
+
+        echo -n $T" "
+
+        #Comparar con solucion correcta
+        cat $GROUP/$E/${ENAME1}.s | \
+        sed 's/\.text/ /gi' | \
+        sed 's/\.data/ /gi' | \
+        sed 's/\bmain:/main_student:/gi' | \
+        sed 's/\bCompute_Integral:/Compute_Integral_student:/gi' > /tmp/$$.txt
+
+        cat ./test/ej2/$T /tmp/$$.txt > $GROUP/$E/test/test_${ENAME1}_$T
+        
+
+        /creator/creator.sh -a "/creator/architecture/RISC_V_RV32IMFD.json" -s $GROUP/$E/test/test_${ENAME1}_$T -l test/pow.o -o min -r solution/output/output_${ENAME1}_$T.txt --maxins 100000 > /tmp/$$.txt
+        
+        if [ $? -eq 0 ]
+        then
+                echo -n "1;" >> Notas_$GROUP.csv
+        else
+            echo -n "0;" >> Notas_$GROUP.csv
+
+            mkdir -p $GROUP/$E/test_problems
+            /creator/creator.sh -a "/creator/architecture/RISC_V_RV32IMFD.json" -s $GROUP/$E/test/test_${ENAME1}_$T -l test/pow.o --maxins 100000 &> $GROUP/$E/test_problems/problem_${ENAME1}_$T.txt
+
+            #/creator/creator.sh -a "/creator/architecture/RISC_V_RV32IMFD.json" -s $GROUP/$E/test/test_${ENAME1}_$T | aha > $GROUP/$E/test_problems/problem_${ENAME1}_$T.html
+            #wkhtmltopdf $GROUP/$E/test_problems/problem_${ENAME1}_$T.html $GROUP/$E/test_problems/problem_${ENAME1}_$T.pdf &> /dev/null
+        fi
+
+        #######
+        echo ""                                                             >> $GROUP/index.html
+        echo "<tr>"                                                         >> $GROUP/index.html
+        echo "<td>$E</td>"                                                  >> $GROUP/index.html
+        echo "<td>$T</td>"                                                  >> $GROUP/index.html
+        echo "<td>$OK</td>"                                                 >> $GROUP/index.html
+        echo "<td><a href=\"./$E/test_output/s3_$T.txt\">link</a></td>"     >> $GROUP/index.html
+        echo "<td><a href=\"./$E/test_output/e3_$T.txt\">link</a></td>"     >> $GROUP/index.html
+        echo "</tr>"                                                        >> $GROUP/index.html
+
+        cp $GROUP/$E/test/test_${ENAME1}_$T   $GROUP/$E/test_output/e3_$T.txt
+        cp /tmp/$$.txt                        $GROUP/$E/test_output/s3_$T.txt
         #######
 
         cat /tmp/$$.txt >> $GROUP/$E/logs.txt
