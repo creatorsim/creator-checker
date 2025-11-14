@@ -15,9 +15,24 @@ fi
 GROUP=$1
 ENAME1=exercises
 
-ls -1 $GROUP > $GROUP.txt
+#ls -1 $GROUP > $GROUP.txt
 
-LIST=$(cat $GROUP.txt | sed 's/.zip//g' | grep -v index.html | sort | uniq)
+#LIST=$(cat $GROUP.txt | sed 's/.zip//g' | grep -v index.html | sort | uniq)
+TXTFILE="${GROUP}.txt"
+
+# If the text file already exists, use it.
+# Otherwise, create it from the current directory list.
+if [ -f "$TXTFILE" ]; then
+    echo "🔍 Using existing list: $TXTFILE"
+else
+    echo "📝 Creating new list: $TXTFILE"
+    ls -1 "$GROUP" | sed 's/.zip$//' | grep -v index.html | sort | uniq > "$TXTFILE"
+fi
+
+# Read directories to process from the list file
+LIST=$(cat "$TXTFILE" | tr -d '\r' | grep -v '^$')
+
+#exit 0
 TEST_1=$(ls -1 test/ej1 | grep -v "\.o")
 TEST_2=$(ls -1 test/ej2 | grep -v "\.o")
 TEST_3=$(ls -1 test/ej3 | grep -v "\.o")
@@ -34,7 +49,7 @@ done
 for T in $TEST_2; do
     echo -n $T";" >> Notas_$GROUP.csv
 done
-echo "" >> Notas_$GROUP.csv
+#echo "" >> Notas_$GROUP.csv
 
 for T in $TEST_3; do
     echo -n $T";" >> Notas_$GROUP.csv
@@ -202,9 +217,9 @@ for E in $LIST; do
         sed 's/\.text/ /gi' | \
         sed 's/\.data/ /gi' | \
         sed 's/\bmain:/main_student:/gi' | \
-        sed 's/\bCompute_Integral:/Compute_Integral_student:/gi' > /tmp/$$.txt
+        sed 's/\bNewton_real:/Newton_real_student:/gi' > /tmp/$$.txt
 
-        cat ./test/ej2/$T /tmp/$$.txt > $GROUP/$E/test/test_${ENAME1}_$T
+        cat ./test/ej3/$T /tmp/$$.txt > $GROUP/$E/test/test_${ENAME1}_$T
         
 
         /creator/creator.sh -a "/creator/architecture/RISC_V_RV32IMFD.json" -s $GROUP/$E/test/test_${ENAME1}_$T -l test/pow.o -o min -r solution/output/output_${ENAME1}_$T.txt --maxins 100000 > /tmp/$$.txt
@@ -251,5 +266,5 @@ for E in $LIST; do
     echo "" >> Notas_$GROUP.csv
 done
 
-rm $GROUP.txt
+#rm $GROUP.txt
 
