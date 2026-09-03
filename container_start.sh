@@ -1,7 +1,6 @@
 #!/bin/bash
 set -x
 
-sudo docker build -t creator_corrector .
+docker build -t creator_checker .
 
-sudo docker run -v $(pwd)/ec_p1_corrector/:/ec_p1_corrector/ -it creator_corrector /bin/bash
-
+docker run -v $(pwd)/ec_p1_corrector/:/ec_p1_corrector/ -it creator_checker /bin/bash
