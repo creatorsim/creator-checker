@@ -20,6 +20,9 @@
 
 
 
+# Mount the creator folder to /workspace/creator
+ln -s /creator /workspace/creator
+
 # Start SSHD
 /usr/sbin/sshd -D
 status=$?

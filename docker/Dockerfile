@@ -56,6 +56,17 @@ RUN git clone --recurse-submodules https://github.com/creatorsim/creator.git && 
     bun install && \
     bun dev:wasm
 
+
 RUN mkdir -p /workspace
 
-CMD ["/usr/bin/sleep","infinity"]
+
+# container start-up
+RUN mkdir -p /srv
+COPY ./dockerstart.sh /srv
+
+# Initial env
+RUN echo 'root:creator' | chpasswd
+WORKDIR "/workspace"
+
+EXPOSE 22
+CMD ["/srv/dockerstart.sh"]
