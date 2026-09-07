@@ -6,7 +6,7 @@ if [ "$#" -lt 1 ];
 then
     echo ""
     echo " CREATOR checker"
-    echo "  Usage: ./corrector <reduced group>"
+    echo "  Usage: ./s30_checker.sh <reduced group>"
     echo ""
     exit -1
 fi
@@ -23,9 +23,9 @@ TXTFILE="${GROUP}.txt"
 # If the text file already exists, use it.
 # Otherwise, create it from the current directory list.
 if [ -f "$TXTFILE" ]; then
-    echo "🔍 Using existing list: $TXTFILE"
+    echo "Using existing list: $TXTFILE"
 else
-    echo "📝 Creating new list: $TXTFILE"
+    echo "Creating new list: $TXTFILE"
     ls -1 "$GROUP" | sed 's/.zip$//' | grep -v index.html | sort | uniq > "$TXTFILE"
 fi
 
@@ -99,10 +99,10 @@ for E in $LIST; do
         sed 's/\bmain:/main_student:/gi' > /tmp/$$.txt
 
         cat ./test/ej1/$T /tmp/$$.txt  >  $GROUP/$E/test/test_${ENAME1}_$T
-        
+
         # creator...
         /creator/creator.sh -a "/creator/architecture/RISC_V_RV32IMFD.json" -s $GROUP/$E/test/test_${ENAME1}_$T -l test/pow.o -o min -r solution/output/output_${ENAME1}_$T.txt --maxins 100000 > /tmp/$$.txt
-        
+
         if [ $? -eq 0 ]
         then
            echo -n "1;" >> Notas_$GROUP.csv
@@ -159,10 +159,10 @@ for E in $LIST; do
         sed 's/\bmain:/main_student:/gi' > /tmp/$$.txt
 
         cat ./test/ej2/$T /tmp/$$.txt  >  $GROUP/$E/test/test_${ENAME1}_$T
-        
+
         # creator...
         /creator/creator.sh -a "/creator/architecture/RISC_V_RV32IMFD.json" -s $GROUP/$E/test/test_${ENAME1}_$T -l test/pow.o -o min -r solution/output/output_${ENAME1}_$T.txt --maxins 1000000 > /tmp/$$.txt
-        
+
         if [ $? -eq 0 ]
         then
            echo -n "1;" >> Notas_$GROUP.csv
@@ -220,10 +220,10 @@ for E in $LIST; do
         sed 's/\bNewton_real:/Newton_real_student:/gi' > /tmp/$$.txt
 
         cat ./test/ej3/$T /tmp/$$.txt > $GROUP/$E/test/test_${ENAME1}_$T
-        
+
 
         /creator/creator.sh -a "/creator/architecture/RISC_V_RV32IMFD.json" -s $GROUP/$E/test/test_${ENAME1}_$T -l test/pow.o -o min -r solution/output/output_${ENAME1}_$T.txt --maxins 100000 > /tmp/$$.txt
-        
+
         if [ $? -eq 0 ]
         then
                 echo -n "1;" >> Notas_$GROUP.csv
@@ -255,7 +255,7 @@ for E in $LIST; do
         cat /tmp/$$.txt
         rm  /tmp/$$.txt
     done
-    
+
     #######
     echo "</table>"        >> $GROUP/index.html
     echo "</html>"         >> $GROUP/index.html
