@@ -1,5 +1,5 @@
 #!/bin/bash
-set -x
+#set -x
 
 # check arguments
 if [ "$#" -lt 1 ];
@@ -13,7 +13,7 @@ fi
 
 # set initial values
 GROUP=$1                                             # Group identification (e.g., gr-1, gr-2, etc.).
-ENAME1=exercise                                      # Student assembly program file.
+ENAME=exercise_1                                     # Student assembly program file. #TODO: generic
 ARCH_PATH="/creator/architecture/RISCV/RV32IMFD.yml" # Architecture path for CREATOR.
 
 TXTFILE="/workspace/submissions/${GROUP}/submissions.txt"
@@ -30,7 +30,7 @@ fi
 # Read directories to process from the list file
 LIST=$(cat "$TXTFILE" | tr -d '\r' | grep -v '^$')
 
-TEST_1=$(ls -1 /workspace/tests/exercise_1 | grep -v "\.o" | grep -v "\.yml") # TODO: generic
+TEST_1=$(ls -1 /workspace/tests/$ENAME | grep -v "\.o" | grep -v "\.yml") # TODO: generic
 
 # Header
 rm    -rf /workspace/results/$GROUP
@@ -76,12 +76,12 @@ for E in $LIST; do
         echo -n $T" "
 
         # Build test code
-        cat /workspace/results/$GROUP/$E/${ENAME1}.s | \
+        cat /workspace/submissions/$GROUP/$E/${ENAME}.s | \
         sed 's/\.text/ /gi'     | \
         sed 's/\.data/ /gi'     | \
         sed 's/\bmain:/main_student:/gi' > /tmp/$$.txt
 
-        cat ./test/exercise_1/$T /tmp/$$.txt  >  /workspace/results/$GROUP/$E/test/test_${ENAME1}_$T # TODO: generic
+        cat /workspace/tests/$ENAME/$T /tmp/$$.txt  >  /workspace/results/$GROUP/$E/test/test_${ENAME}_${T} # TODO: generic
 
 
 
@@ -91,46 +91,46 @@ for E in $LIST; do
 
 
 
-        # CREATOR...
-        # /creator/creator.sh -a $ARCH_PATH -s /workspace/results/$GROUP/$E/test/test_${ENAME1}_$T --validate /workspace/tests/solution/output_${ENAME1}_$T.yml > /tmp/$$.txt
+        # CREATOR checker execution
+        /creator/creator.sh -a $ARCH_PATH -s /workspace/results/$GROUP/$E/test/test_${ENAME}_${T} --validate /workspace/tests/$ENAME/${T%.s}_solution.yml > /tmp/$$.txt
 
-        # if [ $? -eq 0 ]
-        # then
-        #    echo -n "1;" >> /workspace/results/$GROUP/grades_$GROUP.csv
-        #    OK=1
-        # else
-        #    echo -n "0;" >> /workspace/results/$GROUP/grades_$GROUP.csv
-        #    OK=0
+        if [ $? -eq 0 ]
+        then
+            echo -n "1;" >> /workspace/results/$GROUP/grades_$GROUP.csv
+            OK=1
+        else
+            echo -n "0;" >> /workspace/results/$GROUP/grades_$GROUP.csv
+            OK=0
 
-        #     mkdir -p /workspace/results/$GROUP/$E/test_problems
+            mkdir -p /workspace/results/$GROUP/$E/test_problems
 
-        #     /creator/creator.sh -a $ARCH_PATH -s /workspace/results/$GROUP/$E/test/test_${ENAME1}_$T --validate /workspace/tests/solution/output_${ENAME1}_$T.yml &> /workspace/results/$GROUP/$E/test_problems/problem_${ENAME1}_$T.txt
+            /creator/creator.sh -a $ARCH_PATH -s /workspace/results/$GROUP/$E/test/test_${ENAME}_${T} --validate /workspace/tests/$ENAME/${T%.s}_solution.yml &> /workspace/results/$GROUP/$E/test_problems/problem_${ENAME}_${T}.txt
 
-            #/creator/creator.sh -a "/creator/architecture/RISC_V_RV32IMFD.json" -s /workspace/results/$GROUP/$E/test/test_${ENAME1}_$T | aha > /workspace/results/$GROUP/$E/test_problems/problem_${ENAME1}_$T.html
-            #wkhtmltopdf /workspace/results/$GROUP/$E/test_problems/problem_${ENAME1}_$T.html /workspace/results/$GROUP/$E/test_problems/problem_${ENAME1}_$T.pdf &> /dev/null
-        # fi
-
-
+            #/creator/creator.sh -a "/creator/architecture/RISC_V_RV32IMFD.json" -s /workspace/results/$GROUP/$E/test/test_${ENAME}_${T} | aha > /workspace/results/$GROUP/$E/test_problems/problem_${ENAME}_${T}.html
+            #wkhtmltopdf /workspace/results/$GROUP/$E/test_problems/problem_${ENAME}_${T}.html /workspace/results/$GROUP/$E/test_problems/problem_${ENAME}_${T}.pdf &> /dev/null
+        fi
 
 
 
 
 
 
-        cp /tmp/$$.txt /workspace/results/$GROUP/$E/test_output/test_${ENAME1}_$T
+
+
+        cp /tmp/$$.txt /workspace/results/$GROUP/$E/test_output/test_${ENAME}_${T}_output.txt
 
         cat /tmp/$$.txt >> /workspace/results/$GROUP/$E/logs.txt
         cat /tmp/$$.txt
         rm  /tmp/$$.txt
 
         #######
-        echo ""                                                             >> /workspace/results/$GROUP/index_$GROUP.html
-        echo "<tr>"                                                         >> /workspace/results/$GROUP/index_$GROUP.html
-        echo "<td>$E</td>"                                                  >> /workspace/results/$GROUP/index_$GROUP.html
-        echo "<td>$T</td>"                                                  >> /workspace/results/$GROUP/index_$GROUP.html
-        echo "<td>$OK</td>"                                                 >> /workspace/results/$GROUP/index_$GROUP.html
-        echo "<td><a href=\"./$E/test_output/test_${ENAME1}_$T\">link</a></td>"     >> /workspace/results/$GROUP/index_$GROUP.html
-        echo "</tr>"                                                        >> /workspace/results/$GROUP/index_$GROUP.html
+        echo ""                                                                        >> /workspace/results/$GROUP/index_$GROUP.html
+        echo "<tr>"                                                                    >> /workspace/results/$GROUP/index_$GROUP.html
+        echo "<td>$E</td>"                                                             >> /workspace/results/$GROUP/index_$GROUP.html
+        echo "<td>$T</td>"                                                             >> /workspace/results/$GROUP/index_$GROUP.html
+        echo "<td>$OK</td>"                                                            >> /workspace/results/$GROUP/index_$GROUP.html
+        echo "<td><a href=\"./$E/test_output/test_${ENAME}_${T}_output.txt\">link</a></td>"  >> /workspace/results/$GROUP/index_$GROUP.html
+        echo "</tr>"                                                                   >> /workspace/results/$GROUP/index_$GROUP.html
         #######
     done
 
