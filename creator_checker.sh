@@ -1,0 +1,176 @@
+#!/bin/bash
+#set -x
+
+#  Copyright 2018-2026 CREATOR Team.
+#
+#  This file is part of CREATOR.
+#
+#  CREATOR is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU Lesser General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  CREATOR is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU Lesser General Public License for more details.
+#
+#  You should have received a copy of the GNU Lesser General Public License
+#  along with CREATOR.  If not, see <http://www.gnu.org/licenses/>.
+
+
+
+#
+# Usage
+#
+
+if [ $# -eq 0 ]; then
+	$0 help
+	exit
+fi
+
+
+#
+# check docker
+#
+
+DOCKER_PREFIX_NAME=docker
+
+docker -v >& /dev/null
+status=$?
+if [ $status -ne 0 ]; then
+     echo ""
+     echo "  CREATOR Checker "
+     echo " -----------------"
+     echo ""
+     echo ": ERROR: docker is not found in this computer."
+     echo ":"
+     echo ": Just in case, please check:"
+     echo ":  * Did you install docker?"
+     echo ":    Please visit https://docs.docker.com/get-docker/"
+     echo ":"
+     echo ":  * Are you running 'Docker Desktop', 'docker daemon' or similar solution?"
+     echo ":    Please visit https://docs.docker.com/"
+     echo ""
+     exit
+fi
+
+
+#
+# for each argument, try to execute it
+#
+
+while (( "$#" ))
+do
+	arg_i=$1
+	case $arg_i in
+        build)
+            # Check params
+            if [ ! -f docker/Dockerfile ]; then
+                echo ": The docker/Dockerfile file is not found."
+                echo ": * Did you execute git clone https://github.com/creatorsim/creator-checker.git?"
+                echo ""
+                exit
+            fi
+
+            HOST_UID=$(id -u)
+            HOST_GID=$(id -g)
+
+            # Build image
+            echo "Building image (it may take a while)..."
+            cd docker
+            docker image build --no-cache -t creator_checker --build-arg UID=$HOST_UID --build-arg GID=$HOST_GID -f Dockerfile .
+            cd ..
+
+            # Build tester (just in case)
+            mkdir -p results
+            chown -R $HOST_UID:$HOST_GID results
+        ;;
+
+
+	    start)
+            # Start container cluster (single node)
+            echo "Building container..."
+            HOST_UID=$HOST_UID HOST_GID=$HOST_GID docker compose -f docker/dockercompose.yml up -d --scale node=1
+            if [ $? -gt 0 ]; then
+                echo ": The docker compose command failed to spin up containers."
+                echo ": * Did you execute git clone https://github.com/creatorsim/creator-checker.git?."
+                echo ""
+                exit
+            fi
+
+            # Check params
+            CO_ID=1
+            CO_NC=$(docker ps -f name=$DOCKER_PREFIX_NAME -q | wc -l)
+            if [ $CO_ID -gt $CO_NC ]; then
+                echo "ERROR: Container ID $CO_ID out of range (1...$CO_NC)"
+                shift
+                continue
+            fi
+
+            # Bash on container...
+            echo "Executing /bin/bash on container $CO_ID..."
+            CO_NAME=$(docker ps -f name=$DOCKER_PREFIX_NAME -q | head -$CO_ID | tail -1)
+            docker exec -it $CO_NAME /bin/bash
+        ;;
+
+
+	    stop)
+            # Stopping containers
+            echo "Stopping containers..."
+            HOST_UID=$HOST_UID HOST_GID=$HOST_GID docker compose -f docker/dockercompose.yml down
+            if [ $? -gt 0 ]; then
+                echo ": The docker compose command failed to stop containers."
+                echo ": * Did you execute git clone https://github.com/creatorsim/creator-checker.git?."
+                echo ""
+                exit
+            fi
+        ;;
+
+
+	    status)
+		    echo "Show status of current containers..."
+		    docker ps
+	    ;;
+
+
+	    cleanup)
+		    # Removing everything (warning)
+		    echo "Removing containers and images..."
+            docker rm      -f $(docker ps     -a -q)
+            docker rmi     -f $(docker images -a -q)
+            docker volume rm  $(docker volume ls -q)
+            docker network rm $(docker network ls|tail -n+2|awk '{if($2 !~ /bridge|none|host/){ print $1 }}')
+	    ;;
+
+
+	    help)
+            echo ""
+            echo "  CREATOR Checker "
+            echo " -----------------"
+            echo ""
+            echo "  Usage: $0 <action> [<options>]"
+            echo ""
+            echo "    1) First action is build:"
+            echo "        $0 build"
+            echo ""
+            echo "    2) Then you can start the container and execute bash:"
+            echo "        $0 start"
+            echo ""
+            echo "    3) Then you can perform different tasks, please execute help.sh for more info:"
+            echo "        ./help.sh"
+            echo ""
+            echo "    4) The last action is stop:"
+            echo "        $0 stop"
+            echo ""
+	    ;;
+
+	    *)
+		    echo ""
+		    echo "Unknow command: $1"
+            $0 help
+	    ;;
+	esac
+
+	shift
+done

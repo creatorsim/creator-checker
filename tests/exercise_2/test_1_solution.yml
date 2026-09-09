@@ -1,0 +1,6 @@
+maxCycles: 100
+floatThreshold: 10e-10
+sentinel: true
+state:
+  registers:
+    a0: 0x00000078

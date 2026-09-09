@@ -1,0 +1,30 @@
+networks:
+  b0:
+    driver: bridge
+
+services:
+  node:
+    build:
+      context: ./
+      dockerfile: ./Dockerfile
+      args:
+        UID: ${HOST_UID}
+        GID: ${HOST_GID}
+    image: creator_checker
+    volumes:
+      - type: bind
+        source: ..
+        target: /workspace
+      - type: bind
+        source: /lib/modules
+        target: /lib/modules
+    networks:
+      - b0
+    environment:
+      - HOST_UID=${HOST_UID}
+      - HOST_GID=${HOST_GID}
+    privileged: true
+    cap_add:
+      - ALL
+    ports:
+      - "8000:8000"
