@@ -4,3 +4,5 @@
 
 /results
 /creator
+/submissions/*
+!/submissions/*.zip
