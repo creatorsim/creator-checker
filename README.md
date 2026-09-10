@@ -53,7 +53,7 @@
    ```
 
 4. **Prepare test files:**
-   Replace the example test files in the `tests/` directory with your target correction test suite.
+   Replace the example test files in the `tests/` directory with your target correction test suite. See [`CREATOR Wiki - Validating program execution`](https://creatorsim.github.io/creator-wiki/teaching-resources/validator.html).
 
 5. **Add student submissions:**
    Place the student submission files (`*.zip`) inside the `submissions/` directory.
