@@ -87,6 +87,9 @@ do
             chown -R $HOST_UID:$HOST_GID results
         ;;
 
+        pull)
+            docker pull creatorsim/creator-checker:latest
+        ;;
 
 	    start)
             # Start container cluster (single node)
