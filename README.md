@@ -1,5 +1,19 @@
 <h1 align="center">CREATOR Checker</h1>
 
+<p align="center">
+  <strong>Automated grading and testing tool for student code submissions using Docker.</strong>
+</p>
+
+<p align="center">
+  <a href="https://hub.docker.com/repository/docker/creatorsim/creator-checker">
+    <img src="https://img.shields.io/badge/Docker-Ready-blue?logo=docker" alt="Docker">
+  </a>
+  <img src="https://img.shields.io/docker/pulls/creatorsim/creator-checker?style=flat&logo=docker&logoColor=white" alt="Docker Pulls"/>
+  <img src="https://img.shields.io/docker/image-size/creatorsim/creator-checker?sort=date&style=flat&logo=docker&logoColor=white" alt="Docker Image Size"/>
+</p>
+
+---
+
 ## 1. Main Files and Directories
 
 * 📄 `creator_checker.sh` – Main execution script.
@@ -7,51 +21,55 @@
 * 🗂️ `submissions/` – Student submissions organized by group.
 * 🗂️ `tests/` – Test programs and reference solutions.
 * 🗂️ `results/` – Evaluation results and grades.
-* 🗂️ `scripts/` – Helper correction scripts:
+* 🗂️ `scripts/` – Correction scripts:
   * 📄 `s10_unzip.sh` – Unzips group submissions.
-  * 📄 `s20_checker.sh` – Executes tests for a group.
- 
+  * 📄 `s20_checker.sh` – Executes tests for a specified group.
 
+---
 
-## 2. Steps to check all submissions from a group
+## 2. Steps to Check All Submissions from a Group
 
-1. Clone this repository:
-   ```console
+1. **Clone the repository:**
+   ```bash
    git clone https://github.com/creatorsim/creator-checker.git
-   ```
-   
-2. Build the container or pull the container from Docker Hub:
-
-   * Build the container:
-   ```console
-   ./creator_checker.sh build
+   cd creator-checker
    ```
 
-   * Pull the container:
-   ```console
-   ./creator_checker.sh pull
-   ```
-   
-4. Start the container:
-   ```console
+2. **Prepare the environment:**
+   Build or pull the required Docker container.
+
+   * *Option A: Build the container locally*
+     ```bash
+     ./creator_checker.sh build
+     ```
+   * *Option B: Pull the container from Docker Hub*
+     ```bash
+     ./creator_checker.sh pull
+     ```
+
+3. **Start the container:**
+   ```bash
    ./creator_checker.sh start
    ```
-      
-3. Replace the example test files in the *tests* directory with the correction files.
-   
-4. Replace the example submissions in the *submission* directory with the student submissions (\*.zip).
 
-5. Unzip all group submissions:
-   ```console
-   ./scripts/./scripts/s10_unzip.sh <group>
+4. **Prepare test files:**
+   Replace the example test files in the `tests/` directory with your target correction test suite.
+
+5. **Add student submissions:**
+   Place the student submission files (`*.zip`) inside the `submissions/` directory.
+
+6. **Unzip group submissions:**
+   ```bash
+   ./scripts/s10_unzip.sh <group_name>
    ```
 
-6. Check all group submissions. This script generates a CSV file with the assignment-check results.
-   ```console
-   ./scripts/s20_checker.sh <group>
+7. **Run the evaluation script:**
+   Executes tests for the target group and generates a CSV file with results in the `results/` directory.
+   ```bash
+   ./scripts/s20_checker.sh <group_name>
    ```
 
-7. Stop the container:
-   ```console
+8. **Stop the container:**
+   ```bash
    ./creator_checker.sh stop
    ```
