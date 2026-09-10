@@ -4,13 +4,8 @@ networks:
 
 services:
   node:
-    build:
-      context: ./
-      dockerfile: ./Dockerfile
-      args:
-        UID: ${HOST_UID}
-        GID: ${HOST_GID}
-    image: creator_checker
+    image: creatorsim/creator-checker
+    pull_policy: missing # Revisa si existe localmente; si no está, hace pull
     volumes:
       - type: bind
         source: ..

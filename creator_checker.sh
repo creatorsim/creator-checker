@@ -79,7 +79,7 @@ do
             # Build image
             echo "Building image (it may take a while)..."
             cd docker
-            docker image build --no-cache -t creator_checker --build-arg UID=$HOST_UID --build-arg GID=$HOST_GID -f Dockerfile .
+            docker image build --no-cache -t creatorsim/creator_checker --build-arg UID=$HOST_UID --build-arg GID=$HOST_GID -f Dockerfile .
             cd ..
 
             # Build tester (just in case)
