@@ -1,36 +1,57 @@
-<html>
- <h1 align="center">CREATOR (didaCtic and geneRic assEmbly progrAmming simulaTOR) Checker</h1><br>
-</html>
+<h1 align="center">CREATOR Checker</h1>
 
-## 1. Main files and directories:
-* **container_start.sh**: script that generates the container and executes it.
-* **ec_p1_corrector**: directory where the correction is made.
-  * **solution**: directory which contains the solutions.
-  * **test**: directory where the tests to be carried out are defined, one directory per exercise and one file per test case.
-  * **unzip_all.sh**: unzips all submissions from a reduced-group, receives a parameter which is the group number, for example: ```./unzip_all 81```
-  * **checker.sh**: script that checks all the submissions of a reduced-group, this script gets a parameter that is the group number, for example: ```./checker 81```
-  
-## 2. Steps to check all submissions from a reduced-group
+## 1. Main Files and Directories
+
+* 📄 `creator_checker.sh` – Main execution script.
+* 🗂️ `docker/` – Contains Docker-related configuration files.
+* 🗂️ `submissions/` – Student submissions organized by group.
+* 🗂️ `tests/` – Test programs and reference solutions.
+* 🗂️ `results/` – Evaluation results and grades.
+* 🗂️ `scripts/` – Helper correction scripts:
+  * 📄 `s10_unzip.sh` – Unzips group submissions.
+  * 📄 `s20_checker.sh` – Executes tests for a group.
+ 
+
+
+## 2. Steps to check all submissions from a group
+
 1. Clone this repository:
    ```console
-   git clone https://github.com/creatorsim/checker.git
+   git clone https://github.com/creatorsim/creator-checker.git
    ```
-2. Build the container:
+   
+2. Build the container or pull the container from Docker Hub:
+
+   * Build the container:
    ```console
-   ./container_start.sh
-   ```
-3. Update the *solutions* and *tests* in the *ec_p1_corrector directory*.
-4. Make reduced-group directory and include all deliveries (\*.zip) in the directory.
-5. Execute for each reduced-group directory:
-   ```console
-   ./unzip_all.sh <reduced group>
-   ```
-6. Execute for each group the corresponding script, checker_esp.sh (Spanish) or checker_eng.sh (English). <br/>
-   Those scripts generate a CSV file with the results of the assigment checks.
-   ```console
-   ./checker_esp.sh <reduced group>
-   ```
-   ```console
-   ./checker_eng.sh <reduced group>
+   ./creator_checker.sh build
    ```
 
+   * Pull the container:
+   ```console
+   ./creator_checker.sh pull
+   ```
+   
+4. Start the container:
+   ```console
+   ./creator_checker.sh start
+   ```
+      
+3. Replace the example test files in the *tests* directory with the correction files.
+   
+4. Replace the example submissions in the *submission* directory with the student submissions (\*.zip).
+
+5. Unzip all group submissions:
+   ```console
+   ./scripts/./scripts/s10_unzip.sh <group>
+   ```
+
+6. Check all group submissions. This script generates a CSV file with the assignment-check results.
+   ```console
+   ./scripts/s20_checker.sh <group>
+   ```
+
+7. Stop the container:
+   ```console
+   ./creator_checker.sh stop
+   ```
